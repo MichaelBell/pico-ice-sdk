@@ -33,9 +33,10 @@
 #include "ice_spi.h"
 
 void ice_fpga_init(uint8_t freq_mhz) {
-    uint src = CLOCKS_CLK_GPOUT0_CTRL_AUXSRC_VALUE_CLK_USB;
+    uint src = CLOCKS_CLK_GPOUT0_CTRL_AUXSRC_VALUE_CLK_SYS;
+    uint sys_clk_hz = clock_get_hz(clk_sys);
 
-    clock_gpio_init(ICE_FPGA_CLOCK_PIN, src, 48 / freq_mhz);
+    clock_gpio_init(ICE_FPGA_CLOCK_PIN, src, sys_clk_hz / (freq_mhz * MHZ));
 
     ice_spi_init();
     ice_spi_init_cs_pin(ICE_FPGA_CSN_PIN, false);
