@@ -24,28 +24,23 @@
 
 #pragma once
 
-// This is chosen to allow all commands to the flash and SRAM to work.
-// 33MHz is the fastest the SRAM supports a 03h read command.
-#define ICE_SPI_BAUDRATE (20 * 1000 * 1000)
-
 #include <stdint.h>
 #include <stddef.h>
-#include <stdbool.h>
+#include "boards/pico_ice.h"
+
+// This module is not thread safe.
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-void ice_spi_init(void);
-void ice_spi_init_cs_pin(uint8_t cs_pin, bool active_high);
-void ice_spi_chip_select(uint8_t cs_pin);
-void ice_spi_chip_deselect(uint8_t csn_pin);
-void ice_spi_write_async(const uint8_t *data, size_t data_size, void (*callback)(volatile void *), void *context);
-void ice_spi_write_blocking(const uint8_t *data, size_t data_size);
-void ice_spi_read_async(uint8_t *data, size_t data_size, void (*callback)(volatile void *), void *context);
-void ice_spi_read_blocking(uint8_t *data, size_t data_size);
-bool ice_spi_is_async_complete(void);
-void ice_spi_wait_completion(void);
+void ice_fram_write_enable(bool en);
+void ice_fram_init(bool write_enable);
+void ice_fram_get_id(uint8_t id[4]);
+void ice_fram_write_async(uint32_t addr, const uint8_t *data, size_t data_size, void (*callback)(volatile void *), void *context);
+void ice_fram_write_blocking(uint32_t addr, const uint8_t *data, size_t data_size);
+void ice_fram_read_async(uint32_t addr, uint8_t *data, size_t data_size, void (*callback)(volatile void *), void *context);
+void ice_fram_read_blocking(uint32_t addr, uint8_t *data, size_t data_size);
 
 #ifdef __cplusplus
 }

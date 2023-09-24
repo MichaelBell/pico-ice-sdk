@@ -60,6 +60,9 @@ void ice_spi_init(void) {
     gpio_set_dir(ICE_SPI_SCK_PIN, GPIO_IN);
     gpio_set_dir(ICE_SPI_TX_PIN, GPIO_IN);
     gpio_set_dir(ICE_SPI_RX_PIN, GPIO_IN);
+    gpio_set_pulls(ICE_SPI_RX_PIN, false, false);
+    gpio_set_pulls(ICE_SPI_SCK_PIN, false, false);
+    gpio_set_pulls(ICE_SPI_TX_PIN, false, false);
 
     if (spi_is_initialized) { 
         spi_set_baudrate(spi1, ICE_SPI_BAUDRATE);
@@ -96,6 +99,13 @@ void ice_spi_chip_select(uint8_t csn_pin) {
     gpio_set_function(ICE_SPI_SCK_PIN, GPIO_FUNC_SPI);
     gpio_set_function(ICE_SPI_TX_PIN, GPIO_FUNC_SPI);
 
+    // Busy wait until CS goes inactive
+    bool active_high = csn_pin == ICE_SRAM_CS_PIN;
+    //printf("Pin %d is %d\n", csn_pin, gpio_get(csn_pin));
+    while (gpio_get(csn_pin) == (active_high ? 1 : 0)) {
+        tight_loop_contents();
+    }
+
     // Start an SPI transaction
     gpio_put(csn_pin, false);
     gpio_set_dir(csn_pin, GPIO_OUT);
@@ -116,9 +126,9 @@ void ice_spi_chip_deselect(uint8_t csn_pin) {
     gpio_set_dir(ICE_SPI_SCK_PIN, GPIO_IN);
     gpio_set_dir(ICE_SPI_TX_PIN, GPIO_IN);
     gpio_set_dir(ICE_SPI_RX_PIN, GPIO_IN);
-    gpio_set_function(PICO_DEFAULT_SPI_RX_PIN, GPIO_FUNC_SIO);
-    gpio_set_function(PICO_DEFAULT_SPI_SCK_PIN, GPIO_FUNC_SIO);
-    gpio_set_function(PICO_DEFAULT_SPI_TX_PIN, GPIO_FUNC_SIO);
+    gpio_set_function(ICE_SPI_RX_PIN, GPIO_FUNC_SIO);
+    gpio_set_function(ICE_SPI_SCK_PIN, GPIO_FUNC_SIO);
+    gpio_set_function(ICE_SPI_TX_PIN, GPIO_FUNC_SIO);
 
     switch (csn_pin) {
     case ICE_LED_RED_PIN:

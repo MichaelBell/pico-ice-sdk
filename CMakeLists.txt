@@ -19,6 +19,7 @@ target_sources(pico_ice_sdk INTERFACE
     src/ice_spi.c
     src/ice_flash.c
     src/ice_sram.c
+    src/ice_fram.c
     src/ice_led.c
     src/ice_cram.c
     src/ice_wishbone.c

@@ -80,7 +80,7 @@
 #define ICE_SPI_TX_PIN 11
 #endif
 #ifndef ICE_FLASH_CSN_PIN
-#define ICE_FLASH_CSN_PIN 9
+#define ICE_FLASH_CSN_PIN 17
 #endif
 #ifndef ICE_CRAM_CSN_PIN
 #define ICE_CRAM_CSN_PIN ICE_FLASH_CSN_PIN
@@ -90,6 +90,12 @@
 #endif
 #ifndef ICE_SRAM_CS_PIN
 #define ICE_SRAM_CS_PIN 14 // active-high
+#endif
+#ifndef ICE_FRAM_CSN_PIN
+#define ICE_FRAM_CSN_PIN 6
+#endif
+#ifndef ICE_FRAM_HOLD_PIN
+#define ICE_FRAM_HOLD_PIN 4
 #endif
 // FLASH
 #ifndef ICE_FLASH_SIZE_BYTES

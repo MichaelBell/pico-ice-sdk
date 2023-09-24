@@ -13,7 +13,7 @@
 #include "ice_flash.h"
 #include "ice_fpga.h"
 #include "ice_spi.h"
-#include "ice_sram.h"
+#include "ice_fram.h"
 
 static alarm_id_t alarm_id;
 static bool spi_ready;
@@ -25,13 +25,13 @@ void board_flash_read(uint32_t addr, void *buffer, uint32_t len)
 {
     if (!spi_ready) {
         ice_fpga_stop();
-        ice_sram_init();
+        ice_fram_init(true);
         ice_flash_init();
         spi_ready = true;
     }
     if (addr >= SRAM_ADDR) {
         addr -= SRAM_ADDR;
-        ice_sram_read_blocking(addr, buffer, len);
+        ice_fram_read_blocking(addr, buffer, len);
     }
     else {
         ice_flash_read(addr, buffer, len);
@@ -42,13 +42,13 @@ void board_flash_write(uint32_t addr, const void *data, uint32_t len)
 {
     if (!spi_ready) {
         ice_fpga_stop();
-        ice_sram_init();
+        ice_fram_init(true);
         ice_flash_init();
         spi_ready = true;
     }
     if (addr >= SRAM_ADDR) {
         addr -= SRAM_ADDR;
-        ice_sram_write_blocking(addr, data, len);
+        ice_fram_write_blocking(addr, data, len);
     }
     else {
         int flash_erase_idx = addr / ICE_FLASH_BLOCK_SIZE;
